@@ -76,7 +76,7 @@ class Getter:
             Obtenir les liens vers les pages des fruitières
         """
         link = self.page_liste
-
+        print("Récupération des liens ...")
         while link is not None:
             result = get_links(link)
             self.links_frutieres += result[0]
@@ -86,21 +86,23 @@ class Getter:
         """
             Obtenir les coordonnées GPS
         """
+        print("Récupération des coordonnées ...")
         for link in tqdm(self.links_frutieres):
             self.gps_cords += get_gps(link)
-        print(self.gps_cords)
 
     def save_locs(self):
         """
         Sauvegarder les localisations
         :return:
         """
+        print("Sauvegarde des localisations ...")
         json.dump(self.gps_cords, open('locs.json', 'w'))
 
     def save_to_kml(self):
         """
             Sauvegarder les données en Kml
         """
+        print("Export vers KML ...")
         out = '<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd"><ExtendedData/><Document>'
         for point in tqdm(self.gps_cords):
             out += f'''
@@ -134,11 +136,14 @@ class Getter:
 
 if __name__ == "__main__":
     # Avec sauvegarde
-    getter = Getter(os.getenv("LIEN"), gps_cords=json.load(open('locs.json')))
-    getter.save_to_kml()
+    # getter = Getter(os.getenv("LIEN"), gps_cords=json.load(open('locs.json')))
+    # getter.save_to_kml()
 
     # Depuis le début
-    # getter = Getter(os.getenv("LIEN"))
-    # getter.get_links_frutieres()
-    # getter.get_gps_locs()
-    # getter.save_locs()
+    print("Début ...")
+    getter = Getter(os.getenv("LIEN"))
+    getter.get_links_frutieres()
+    getter.get_gps_locs()
+    getter.save_locs()
+    getter.save_to_kml()
+
